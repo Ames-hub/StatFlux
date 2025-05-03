@@ -1,14 +1,27 @@
 # 📊 StatScience
 
-**StatScience** is a powerful, flexible statistics tracking system designed to let users define and monitor their own custom statistics in real time. Whether you're tracking sales, user growth, productivity metrics, or any stat that matters to *you*, StatScience gives you insight into trends and performance using statistical technology.
+**StatScience** is a powerful, flexible statistics tracking system designed to let users define and monitor their own custom statistics in real time. Whether you're tracking sales, user growth, productivity metrics, or any stat that matters to *you*, StatScience gives you the ability to graph and get insight into trends and performance using statistical technology.
 
 ## 🚀 Features
 
 * 📈 **UNLIMITED CONTROL**: Create and manage custom statistics for your unique needs.
-* 🧠 **INTELLIGENT INSIGHT**: Harness the power of statistical conditions technology.
+* 🧠 **INTELLIGENT INSIGHT**: Learn what will happen to a statistic in the future, and how to improve it.
 * ✍️ **INSTANT ACTION**: Enter data on the fly—**no BS external APIs**.
 * 🔎 **DEEP INSPECTION**: Dive into the decision of the machine. ***SEE*** what it thinks.
 * 📊 **CLEAR VISUALS**: Not only read, but SEE your data with a graph.
+
+## Privacy
+StatScience is completely private. Nobody will know anything about anything unless you yourself directly tell them, or you give them access.
+
+## Who's the Target?
+This tool is for anyone and anything that needs to keep track of a number, such as:
+- Teams that need to report and track metrics consistently
+- Projects that need to track how many visitors their website had
+- Projects that need a service to keep track of numbers
+- Finance workers graphing money in/out
+- Workers tracking how much time they've spent working
+- Anyone tracking how much of something they've gotten in contrast to how many lost
+And ad infinitum!
 
 ## 🛠️ Technology Stack
 
