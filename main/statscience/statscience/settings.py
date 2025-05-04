@@ -28,7 +28,7 @@ dotenv.load_dotenv(dotenv_path)
 # SECURITY WARNING: keep the secret key used in production secret!
 django_key = os.environ.get("DJANGO_SECRET", None)
 if django_key is None or django_key == "":
-    django_key = secrets.token_urlsafe(128)
+    django_key = secrets.token_urlsafe(64)
     with open(dotenv_path, 'a') as f:
         f.write(f"DJANGO_SECRET={django_key}")
 
@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'landingapp'
+    'statsapp'
 ]
 
 MIDDLEWARE = [
