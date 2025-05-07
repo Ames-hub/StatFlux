@@ -1,11 +1,10 @@
 from django.http import HttpRequest
 from django.shortcuts import render
-import os
-
-proj_cwd = os.getcwd()  # ./main/statscience
-app_name = "statsapp"
-
-templates_dir = os.path.join(proj_cwd, "assets", app_name, "templates")
+from .forms import StatisticForm
 
 def home(request: HttpRequest):
-    return render(request, f'{os.path.join(templates_dir, 'home.html')}')
+    return render(request, 'statsapp/home.html')
+
+def create(request):
+    form = StatisticForm()
+    return render(request, 'statsapp/create_statistic.html', {'form': form})

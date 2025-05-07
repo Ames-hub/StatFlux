@@ -1,0 +1,119 @@
+body {
+    background: #787878;
+}
+
+form {
+    min-width: 250px;
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 3rem;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border-radius: 20px;
+    box-shadow:
+            0 10px 20px rgba(0,0,0,0.1),
+            0 6px 6px rgba(0,0,0,0.1);
+}
+
+/* Style the form paragraphs */
+form p {
+    margin-bottom: 1.5rem;
+}
+
+/* Make labels look sleek */
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
+/* Fancy input styling */
+#id_stat_name,
+#id_stat_description {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+/* Textarea specific height */
+#id_stat_description {
+    height: 50px;
+    resize: vertical;
+}
+
+/* Fancy focus effects */
+#id_stat_name:focus,
+#id_stat_description:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+    transform: translateY(-2px);
+}
+
+/* Label animation when field is focused */
+#id_stat_name:focus + label,
+#id_stat_description:focus + label {
+    transform: translateX(5px);
+    color: #3498db;
+}
+
+/* Style the submit button */
+input[type="submit"] {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(52,152,219,0.3);
+}
+
+/* Hover effect for submit button */
+input[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52,152,219,0.4);
+}
+
+input[type="submit"]:active {
+    transform: translateY(1px);
+}
+
+/* Add some hover states to inputs */
+#id_stat_name:hover,
+#id_stat_description:hover {
+    border-color: #bdc3c7;
+}
+
+select#id_stat_type {
+    width: 50%;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+select#id_stat_type:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+/* Optional: Add a nice placeholder style */
+::placeholder {
+    color: #bdc3c7;
+    opacity: 0.7;
+}

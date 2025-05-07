@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'statsapp/css/home.css' %}">
+</head>
+<body>
+    <!-- All main content goes here-->
+    <div id="container">
+        <div id="stat_list">
+            <!-- This will get aligned with the rest of the stats in theory.-->
+            <a href="{% url 'create' %}">
+                <button id="creation_box">
+                    <!-- AN SVG of a green plus -->
+                    <svg id="creation_svg" xmlns="http://www.w3.org/2000/svg"
+                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                    </svg>
+                </button>
+            </a>
+            <div id="dynamic_stats">
+                <!-- This will be replaced with stats from the API-->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

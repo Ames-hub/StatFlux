@@ -1,0 +1,12 @@
+#creation_box {
+    position: relative;
+    background-color: black;
+    width: 100%;
+    height: 70px;
+    left: 0;
+}
+
+#creation_svg {
+    width: 70px;
+    height: 70px;
+}
