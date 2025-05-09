@@ -65,7 +65,7 @@ form label {
 }
 
 /* Style the submit button */
-input[type="submit"] {
+input[type="submit"], #back_btn {
     background: linear-gradient(45deg, #3498db, #2980b9);
     color: white;
     padding: 1rem 2rem;
@@ -76,6 +76,10 @@ input[type="submit"] {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(52,152,219,0.3);
+}
+
+#back_btn {
+    background: linear-gradient(45deg, #bf2f2f, #e82929);
 }
 
 /* Hover effect for submit button */

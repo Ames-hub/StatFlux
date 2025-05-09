@@ -13,5 +13,5 @@ class StatisticForm(forms.Form):
     )
     stat_type = forms.ChoiceField(
         label='Type',
-        choices=[('Normal', 'Normal'), ("Accumulative", "Accumulative")],
+        choices=[('Daily', 'Daily'), ('Weekly', 'Weekly'), ("Accumulative", "Accumulative"), ("Delta", "Delta")],
     )

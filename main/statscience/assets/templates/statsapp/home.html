@@ -26,5 +26,11 @@
             </div>
         </div>
     </div>
+    <!-- Insert these variables as js files can't load these. -->
+    <script>
+        let statUrl = "{% url 'create_statistic' %}";
+        let csrf_token = "{% csrf_token %}";
+    </script>
+    <script src="{% static 'statsapp/js/liststats.js' %}"></script>
 </body>
 </html>
