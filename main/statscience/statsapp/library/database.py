@@ -13,7 +13,10 @@ import os
 
 dotenv.load_dotenv('.env')
 
-class db:
+class dbman:
+    """
+    Database management class.
+    """
     @staticmethod
     def setup_db():
         container_name="StatFlux-Postgres"
@@ -23,7 +26,10 @@ class db:
         db_name="StatFlux"
         listening_port=6543
 
-        client = docker.from_env()
+        try:
+            client = docker.from_env()
+        except docker.errors.DockerException:
+            raise RuntimeError("Docker Engine is not running. Please start Docker and try again.")
 
         print(f"Installing PostgreSQL container '{container_name}'...")
 
@@ -71,7 +77,7 @@ class db:
             container.remove()
             raise RuntimeError("PostgreSQL did not become ready in time.")
 
-        db.save_details(
+        dbman.save_details(
             DB_HOST="localhost",
             DB_PORT=listening_port,
             DB_USERNAME=user,
@@ -149,13 +155,26 @@ class db:
                     print(warn_msg)
                     logging.warning(warn_msg)
 
-        conn = psycopg2.connect(
-            user=DB_USERNAME,
-            password=DB_PASSWORD,
-            host=DB_HOST,
-            port=DB_PORT,
-            database=DB_DATABASE,
-        )
+        try:
+           conn = psycopg2.connect(
+                user=DB_USERNAME,
+                password=DB_PASSWORD,
+                host=DB_HOST,
+                port=DB_PORT,
+                database=DB_DATABASE,
+            )
+        except psycopg2.OperationalError:
+            # Set up the database. We lost access or did not ever have it.
+            dbman.setup_db()
+            # Make the DB's tables and stuff.
+            dbman.modernize()
+            conn = psycopg2.connect(
+                user=DB_USERNAME,
+                password=DB_PASSWORD,
+                host=DB_HOST,
+                port=DB_PORT,
+                database=DB_DATABASE,
+            )
         return conn
 
     @staticmethod
@@ -177,7 +196,7 @@ class db:
         }
 
         try:
-            conn = db.connect()
+            conn = dbman.connect()
             conn.autocommit = True
             cur = conn.cursor()
 
@@ -221,14 +240,10 @@ class db:
             logging.error(f"Database connection failed: {e}")
             exit(1)
 
-if not db.db_accessible():
-    db.setup_db()
-db.modernize()
-
-class db:
+class database:
     @staticmethod
     def create_new_statistic(statistic_name: str, statistic_description: str, statistic_type: str):
-        conn = db.connect()
+        conn = dbman.connect()
         try:
             cur = conn.cursor()
             cur.execute(
@@ -236,7 +251,7 @@ class db:
                 INSERT INTO statistics_table (name, description, type)
                 VALUES (%s, %s, %s)
                 """,
-                (statistic_name, statistic_description, statistic_type),
+                (str(statistic_name), str(statistic_description), str(statistic_type).lower()),
             )
             conn.commit()
             cur.close()
@@ -246,3 +261,137 @@ class db:
             conn.rollback()
             conn.close()
             return False
+
+    @staticmethod
+    def enter_statistic_data(stat_name, value, date):
+        conn = dbman.connect()
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                INSERT INTO statistics_data (name, value, date)
+                VALUES (%s, %s, %s)
+                """,
+                (stat_name, value, date),
+            )
+            conn.commit()
+            cur.close()
+            return True
+        except (psycopg2.OperationalError, psycopg2.ProgrammingError) as err:
+            logging.error(f"Error on line {inspect.currentframe().f_lineno}! Error: {err}", err)
+            conn.rollback()
+            conn.close()
+            return False
+
+    @staticmethod
+    def delete_statistic(statistic_name):
+        conn = dbman.connect()
+        try:
+            cur = conn.cursor()
+
+            # Deletes all saved statistic values
+            cur.execute(
+                """
+                DELETE FROM statistics_data
+                WHERE name = %s
+                """,
+                (statistic_name,),
+            )
+
+            # Deletes the statistic existence from memory
+            cur.execute(
+                """
+                DELETE FROM statistics_table
+                WHERE name = %s
+                """,
+                (statistic_name,),
+            )
+            conn.commit()
+            cur.close()
+            return True
+        except (psycopg2.OperationalError, psycopg2.ProgrammingError) as err:
+            logging.error(f"Error on line {inspect.currentframe().f_lineno}! Error: {err}", err)
+            conn.rollback()
+            conn.close()
+            return False
+
+    @staticmethod
+    def fetch_statistic_details(stat_name):
+        conn = dbman.connect()
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT name, description, type FROM statistics_table
+                WHERE name = %s
+                LIMIT 1
+                """,
+                (stat_name,),
+            )
+            statistic = cur.fetchone()
+            cur.close()
+            return {
+                'name': statistic[0],
+                'description': statistic[1],
+                'type': statistic[2],
+            }
+        except (psycopg2.OperationalError, psycopg2.ProgrammingError) as err:
+            logging.error(f"Error on line {inspect.currentframe().f_lineno}! Error: {err}", err)
+            conn.rollback()
+            conn.close()
+            return None
+
+    @staticmethod
+    def fetch_statistic_data(stat_name):
+        conn = dbman.connect()
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT date, SUM(value) AS total_value
+                FROM statistics_data
+                WHERE name = %s
+                GROUP BY date
+                ORDER BY date ASC
+                """,
+                (stat_name,),
+            )
+            statistic_data = cur.fetchall()
+            cur.close()
+
+            labels = [row[0] for row in statistic_data]
+
+            # TODO: Make this toggleable between the shorthand month name and its number.
+            labels = [label.strftime("%Y-%b-%d") for label in labels]
+
+            return {
+                'name': stat_name,
+                'data': {
+                    'labels': labels,
+                    'values': [row[1] for row in statistic_data],
+                }
+            }
+        except (psycopg2.OperationalError, psycopg2.ProgrammingError) as err:
+            logging.error(f"Error on line {inspect.currentframe().f_lineno}! Error: {err}", err)
+            conn.rollback()
+            conn.close()
+            return []
+
+    @staticmethod
+    def list_all_statistics():
+        conn = dbman.connect()
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT name, description, type FROM statistics_table
+                """
+            )
+            statistics = cur.fetchall()
+            cur.close()
+            return statistics
+        except (psycopg2.OperationalError, psycopg2.ProgrammingError) as err:
+            logging.error(f"Error on line {inspect.currentframe().f_lineno}! Error: {err}", err)
+            conn.rollback()
+            conn.close()
+            return []

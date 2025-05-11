@@ -11,26 +11,29 @@
     <!-- All main content goes here-->
     <div id="container">
         <div id="stat_list">
-            <!-- This will get aligned with the rest of the stats in theory.-->
-            <a href="{% url 'create' %}">
-                <button id="creation_box">
-                    <!-- AN SVG of a green plus -->
-                    <svg id="creation_svg" xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" class="size-6">
+            <div id="interaction_ctrl_panel">
+                <a href="{% url 'delete' %}" class="interaction_item">
+                    <svg class='interaction_svg' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="maroon">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                    </svg>
+                </a>
+                <a href="{% url 'create' %}" class="interaction_item">
+                    <svg class="interaction_svg" xmlns="http://www.w3.org/2000/svg"
+                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" >
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
                     </svg>
-                </button>
-            </a>
+                </a>
+            </div>
             <div id="dynamic_stats">
                 <!-- This will be replaced with stats from the API-->
             </div>
         </div>
     </div>
     <!-- Insert these variables as js files can't load these. -->
-    <script>
-        let statUrl = "{% url 'create_statistic' %}";
-        let csrf_token = "{% csrf_token %}";
-    </script>
     <script src="{% static 'statsapp/js/liststats.js' %}"></script>
+    <script>
+        const base_url = window.location.origin;
+        initialize_list(base_url)
+    </script>
 </body>
 </html>

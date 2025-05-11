@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<!--suppress JSUnresolvedLibraryURL -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistic Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'statsapp/css/statisticview.css' %}">
+</head>
+<body>
+<div class="container">
+    <!-- Graph Section -->
+    <div class="graph-container card glass">
+        <h2 id="graph-overtext">Performance Overview for {{ stat_name }}</h2>
+        <div style="width: 100%;">
+            <canvas id="myChart" style="height: 295px !important;"></canvas>
+        </div>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="side-panel card dark">
+        <h2>📍 Statistic Status</h2>
+        <div class="condition-status">
+            <div class="status-pair">
+                <span class="status-label">Condition:</span>
+                <span class="status-value debug">{{ current_condition }}</span>
+            </div>
+            <div class="status-pair">
+                <span class="status-label">Last changed:</span>
+                <span class="status-value debug">{{ condition_start_date }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <a id="exit-btn" href="{% url 'home' %}">Exit</a>
+    <div class="form-container card">
+        <form id="data_submit_form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Add Entry">
+        </form>
+    </div>
+</div>
+<div id="toast" style="display:none; position: fixed; bottom: 10px; right: 10px; background: #333; color: white; padding: 10px; border-radius: 5px;"></div>
+
+<script src="{% static 'statsapp/js/data_submit_form.js' %}"></script>
+<script>
+    InitDataSubmitForm("{% url 'enter_stat_data' %}", '{{ stat_name }}')
+</script>
+<script src="{% static 'statsapp/js/get_statistics_data.js' %}"></script>
+<script src="{% static 'statsapp/js/statisticview.js' %}"></script>
+<script>
+    (async function() {
+        await create_graph('{{ stat_name }}');
+    })();
+</script>
+</body>
+</html>
