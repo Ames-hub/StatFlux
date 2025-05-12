@@ -1,6 +1,6 @@
-# 📊 StatScience
+# 📊 StatFlux
 
-**StatScience** is a powerful, flexible statistics tracking system designed to let users define and monitor their own custom statistics in real time. Whether you're tracking sales, user growth, productivity metrics, or any stat that matters to *you*, StatScience allows you to graph and get insight into trends and performance using statistical technology.
+**StatFlux** is a powerful, flexible statistics tracking system designed to let users define and monitor their own custom statistics in real time. Whether you're tracking sales, user growth, productivity metrics, or any stat that matters to *you*, StatFlux allows you to graph and get insight into trends and performance using statistical technology.
 
 Originally, I had intended to design it just for myself, but I decided to also allow others to use it for their own purposes.
 
@@ -13,7 +13,7 @@ Originally, I had intended to design it just for myself, but I decided to also a
 * 📊 **CLEAR VISUALS**: Not only read, but SEE your data with a graph.
 
 ## Privacy
-StatScience is completely private. Nobody will know anything about anything unless you yourself directly tell them, or you give them access.
+StatFlux is completely private. Nobody will know anything about anything unless you yourself directly tell them, or you give them access.
 
 ## Who's the Target?
 This tool is for anyone and anything that needs to keep track of a number, such as:
@@ -37,7 +37,7 @@ Windows users, run these commands in POWERSHELL to install
 the project. Must have Docker installed.
 ```powershell
 # Download the Windows PowerShell setup script
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Ames-hub/statscience/main/setupscripts/setup.ps1" -OutFile "setup.ps1"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Ames-hub/StatFlux/main/setupscripts/setup.ps1" -OutFile "setup.ps1"
 
 # Then run it
 .\setup.ps1
@@ -47,7 +47,7 @@ Linux users, run these commands in the terminal to install
 the project. Must have docker installed.
 ```bash
 # Download the Linux Bash setup script
-curl -o setup.bash https://raw.githubusercontent.com/Ames-hub/statscience/main/setupscripts/setup.bash
+curl -o setup.bash https://raw.githubusercontent.com/Ames-hub/StatFlux/main/setupscripts/setup.bash
 
 # Make it executable and run it
 chmod +x setup.bash
