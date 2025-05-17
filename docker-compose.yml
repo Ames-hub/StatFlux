@@ -1,0 +1,24 @@
+services:
+  web:
+    build: .
+    command: uvicorn statscience.asgi:application --host 0.0.0.0 --port 3000
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    ports:
+      - "3000"
+    working_dir: '/app/statscience/'
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:2030"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/app/staticfiles
+    depends_on:
+      - web
+
+volumes:
+  static_volume:

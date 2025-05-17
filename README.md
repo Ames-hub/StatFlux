@@ -33,6 +33,8 @@ And ad infinitum!
 
 ## 📦 Installation
 
+### Option 1: Using Setup Scripts
+
 Windows users, run these commands in POWERSHELL to install
 the project. Must have Docker installed.
 ```powershell
@@ -54,4 +56,55 @@ chmod +x setup.bash
 ./setup.bash
 ```
 
-You may have to delete the leftover file called "setup.bash" or "setup.ps1" 
+You may have to delete the leftover file called "setup.bash" or "setup.ps1"
+
+### Option 2: Using Docker Directly
+
+If you have Docker and Docker Compose installed, you can run the application directly:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Ames-hub/StatFlux.git
+   cd StatFlux
+   ```
+
+2. Build and start the containers:
+   ```bash
+   docker-compose up -d
+   ```
+
+3. Access the application at http://localhost:8000
+
+### Docker Commands
+
+- Start the application:
+  ```bash
+  docker-compose up -d
+  ```
+
+- Stop the application:
+  ```bash
+  docker-compose down
+  ```
+
+- View logs:
+  ```bash
+  docker-compose logs -f
+  ```
+
+- Run Django management commands:
+  ```bash
+  docker-compose exec web python manage.py [command]
+  ```
+
+  Examples:
+  ```bash
+  # Create migrations
+  docker-compose exec web python manage.py makemigrations
+
+  # Apply migrations
+  docker-compose exec web python manage.py migrate
+
+  # Create a superuser
+  docker-compose exec web python manage.py createsuperuser
+  ```

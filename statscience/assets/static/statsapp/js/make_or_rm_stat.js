@@ -14,6 +14,9 @@ function initializeStatForm(mode, form_id) {
 
         const formData = new FormData(form);  // Gather all form data
 
+        // Slugify the stat_name key
+        formData.set('stat_name', slugify(formData.get('stat_name')));
+
         // noinspection JSUnusedAssignment
         let statUrl = null;
         if (mode === 'create') {

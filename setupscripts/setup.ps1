@@ -8,7 +8,7 @@ Write-Host "🔧 Setting up StatScience (Docker + Django)..."
 if (-Not (Test-Path ".env")) {
     $secret = [System.Guid]::NewGuid().ToString("N")
     @"
-DJANGO_SECRET_KEY=$secret
+DJANGO_SECRET=$secret
 DEBUG=True
 "@ | Out-File -Encoding UTF8 .env
     Write-Host "✅ .env created."

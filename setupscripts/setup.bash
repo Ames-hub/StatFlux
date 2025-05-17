@@ -9,8 +9,8 @@ echo "🔧 Setting up StatScience (Docker + Django)..."
 
 # Create .env if it doesn't exist
 if [ ! -f ".env" ]; then
-    echo "DJANGO_SECRET_KEY=$(openssl rand -hex 32)" > .env
-    echo "DEBUG=False" >> .env
+    echo "DJANGO_SECRET=$(openssl rand -hex 32)" > .env
+    echo "DEBUG=True" >> .env
     echo "✅ .env created."
 fi
 

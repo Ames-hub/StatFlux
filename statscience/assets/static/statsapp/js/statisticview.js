@@ -61,6 +61,11 @@ async function create_graph(stat_name) {
         options: {
             maintainAspectRatio: false,
             responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
 }

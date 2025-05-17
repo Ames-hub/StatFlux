@@ -1,4 +1,5 @@
 from .forms import NewStatisticForm, DeleteStatisticForm, EnterStatDataForm
+from .library.sightline import Sightline
 from .library.database import database
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -61,19 +62,25 @@ def list_statistics(request):
 def view_statistic(request, stat_name):
     form = EnterStatDataForm()
 
-    condition = "W.I.P"
+
+    insight = Sightline(stat_name)
+    condition = insight.find_stat_condition()
     cdn_start_date = 'W.I.P'
+    trend, trend_strength = insight.find_stat_direction()
 
     return render(
         request,
         'statsapp/statisticview.html',
         {
             'stat_name': stat_name,
+            ''
             'current_condition': condition,  # TODO: Replace with real data
             'condition_start_date': cdn_start_date,
+            'condition_trend': trend,
+            'trend_strength': trend_strength,
             'form': form,
-            }
-        )
+        }
+    )
 
 def fetch_statistic_data(request, stat_name):
     statistic = database.fetch_statistic_details(stat_name)

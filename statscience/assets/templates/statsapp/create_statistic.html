@@ -5,27 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistic creation</title>
-    <!-- This page is basically just create_statistic.html copy-pasted so we can reuse this CSS code. -->
     <link rel="stylesheet" href="{% static 'statsapp/css/create.css' %}">
-    <!-- This over-rides the CSS that's not valid for this page -->
-    <link rel="stylesheet" href="{% static 'statsapp/css/delete.css' %}">
 </head>
 <body>
 <!-- All main content goes here-->
 <div id="container">
     <!-- A Form to create a new statistic -->
-    <form id="rm_stat_form">
+    <form id="mk_stat_form">
+        <p id="slug_txt"><strong>Your statistic name will be changed to:</strong> <code id="slug_output">...</code></p>
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Delete">
+
+        <input type="submit" value="Create">
         <a id="back_btn" href="{% url 'home' %}">Back</a>
     </form>
     <div id="toast" style="display:none; position: fixed; bottom: 10px; right: 10px; background: #333; color: white; padding: 10px; border-radius: 5px;"></div>
 
-    <!-- Pass the URL to JavaScript via this variable as you cannot load django variables in JS files -->
     <script src="{% static 'statsapp/js/make_or_rm_stat.js' %}"></script>
+    <script src="{% static 'statsapp/js/statNameSlug.js' %}"></script>
     <script>
-        initializeStatForm(mode='delete', form_id='rm_stat_form')
+        initializeStatForm(mode='create', form_id='mk_stat_form');
+        initializeSlugWatcher();
     </script>
 </div>
 </body>

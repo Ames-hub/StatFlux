@@ -1,9 +1,9 @@
-import secrets
-
 from .jsonfile import jmod, jsontemplates
 import psycopg2.extensions
 from docker import errors
 import psycopg2
+import datetime
+import secrets
 import logging
 import inspect
 import dotenv
@@ -134,15 +134,6 @@ class dbman:
         DB_PASSWORD = jfile.get_value('database.password')
         DB_DATABASE = jfile.get_value('database.database')
 
-        if str(DB_PORT).isdigit() is False:
-            raise ValueError(f"DB Port is Not a Number. Got {DB_PORT} (type: {type(DB_PORT)}")
-        else:
-            DB_PORT = int(DB_PORT)
-
-        if DB_PASSWORD is None:
-            raise KeyError("The DATABASE_PASSWORD key in environment variables or .env file is empty or non-existent. Cannot proceed")
-        if DB_HOST is None:
-            raise KeyError("The DATABASE_HOST key in environemnt variables or .env file is empty or non-existent. Cannot proceed. Need host without port")
         if DB_USERNAME == 'postgres':
             if bool(os.environ.get('SUPPRESS_POSTGRE_WARN', False)) is False:
                 if DB_HOST != 'localhost':  # Don't send the warning if its securely on localhost.
@@ -156,7 +147,7 @@ class dbman:
                     logging.warning(warn_msg)
 
         try:
-           conn = psycopg2.connect(
+            conn = psycopg2.connect(
                 user=DB_USERNAME,
                 password=DB_PASSWORD,
                 host=DB_HOST,
@@ -164,10 +155,19 @@ class dbman:
                 database=DB_DATABASE,
             )
         except psycopg2.OperationalError:
+            print("Couldn't connect to the database; now creating a new local fallback DB.")
+            logging.warning("Couldn't connect to the database; now creating a new local fallback DB.")
             # Set up the database. We lost access or did not ever have it.
             dbman.setup_db()
             # Make the DB's tables and stuff.
             dbman.modernize()
+
+            DB_HOST = jfile.get_value('database.host')
+            DB_PORT = jfile.get_value('database.port')
+            DB_USERNAME = jfile.get_value('database.user')
+            DB_PASSWORD = jfile.get_value('database.password')
+            DB_DATABASE = jfile.get_value('database.database')
+
             conn = psycopg2.connect(
                 user=DB_USERNAME,
                 password=DB_PASSWORD,
@@ -192,6 +192,11 @@ class dbman:
                 'name': 'TEXT REFERENCES statistics_table(name)',
                 'value': 'INTEGER NOT NULL',
                 'date': 'DATE NOT NULL DEFAULT CURRENT_DATE',
+            },
+            'trend_history': {
+                'stat_name': 'TEXT REFERENCES statistics_table(name)',
+                'trend': 'TEXT NOT NULL CHECK (trend IN (\'up\', \'down\', \'level\'))',
+                'timestamp': 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
             }
         }
 
@@ -298,6 +303,15 @@ class database:
                 (statistic_name,),
             )
 
+            # Deletes all histories of its trend
+            cur.execute(
+                """
+                DELETE FROM trend_history
+                WHERE stat_name = %s
+                """,
+                (statistic_name,),
+            )
+
             # Deletes the statistic existence from memory
             cur.execute(
                 """
@@ -352,7 +366,7 @@ class database:
                 FROM statistics_data
                 WHERE name = %s
                 GROUP BY date
-                ORDER BY date ASC
+                ORDER BY date  -- Orders by date, ascending.
                 """,
                 (stat_name,),
             )
@@ -395,3 +409,25 @@ class database:
             conn.rollback()
             conn.close()
             return []
+
+    @staticmethod
+    def log_trend_history(stat_name, trend, datetime_obj=None):
+        if datetime_obj is None:
+            datetime_obj = datetime.datetime.now()
+
+        conn = dbman.connect()
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                INSERT INTO trend_history (stat_name, trend, timestamp)
+                VALUES (%s, %s, %s)
+                """,
+                (stat_name, trend, datetime_obj),
+            )
+            conn.commit()
+            cur.close()
+        except (psycopg2.OperationalError, psycopg2.ProgrammingError) as err:
+            logging.error(f"Error on line {inspect.currentframe().f_lineno}! Error: {err}", exc_info=err)
+            conn.rollback()
+            conn.close()
